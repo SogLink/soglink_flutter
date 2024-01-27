@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: ChangeNotifierProvider<ValueNotifier<int>>.value(
         value: ValueNotifier<int>(0),
-        child: LogInPage(),
+        child: RegisterPage(),
       ),
     );
   }

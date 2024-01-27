@@ -18,7 +18,7 @@ ButtonPrime({this.onTap, required this.text});
           style: regularTextStyle.copyWith(fontSize: 18),
         ),
         style: ElevatedButton.styleFrom(
-            primary: Color.fromRGBO(142, 160, 171, 1),
+            primary: Color.fromRGBO(175, 126, 225, 1),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20))),
       ),

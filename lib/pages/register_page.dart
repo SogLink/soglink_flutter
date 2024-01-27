@@ -12,6 +12,12 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+TextEditingController nameController = TextEditingController();
+TextEditingController secondNameController = TextEditingController();
+TextEditingController eMail = TextEditingController();
+TextEditingController password = TextEditingController();
+TextEditingController repeatPassword = TextEditingController();
+
   bool _secureText = true;
   showHide() {
     setState(() {
@@ -19,7 +25,9 @@ class _RegisterPageState extends State<RegisterPage> {
     });
   }
 
-  registerSubmit() async {}
+  registerSubmit() async {
+    var url = Uri.parse("uri");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +44,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     height: 88,
                     child: Image.asset(
                       'lib/icons/key.png',
-                      color: Color.fromRGBO(142, 160, 171, 1),
+                      color: Color.fromRGBO(175, 126, 225, 1),
                     ),
                   ),
                 ),
@@ -51,6 +59,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 Container(
                   height: 40,
                   child: TextField(
+                    controller:  nameController,
                     decoration: InputDecoration(
                       border: InputBorder.none,
                     ),
@@ -73,6 +82,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 Container(
                   height: 40,
                   child: TextField(
+                    controller: secondNameController,
                     decoration: InputDecoration(
                       border: InputBorder.none,
                     ),
@@ -95,6 +105,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 Container(
                   height: 40,
                   child: TextField(
+                    controller: eMail,
                     decoration: InputDecoration(
                       border: InputBorder.none,
                     ),
@@ -117,6 +128,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 Container(
                   height: 40,
                   child: TextField(
+                    controller: password,
                     decoration: InputDecoration(
                       border: InputBorder.none,
                     ),
@@ -139,6 +151,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 Container(
                   height: 40,
                   child: TextField(
+                    controller: repeatPassword,
                     decoration: InputDecoration(
                       border: InputBorder.none,
                     ),

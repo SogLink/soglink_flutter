@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:soglink/network/api/url_api.dart';
+import 'package:soglink/pages/home_page.dart';
 import 'package:soglink/theme.dart';
 import 'package:soglink/widgets/general_logo.dart';
 import 'package:soglink/widgets/prime_button.dart';
@@ -12,6 +16,9 @@ class LogInPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<LogInPage> {
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
   bool _secureText = true;
   showHide() {
     setState(() {
@@ -19,7 +26,54 @@ class _RegisterPageState extends State<LogInPage> {
     });
   }
 
-  loginSubmit() async {}
+  loginSubmit() async {
+    var urlLogin = Uri.parse(BaseUrl.apilogin);
+    final response = await http.post(urlLogin, body: {
+      "email": emailController.text,
+      "password": passwordController.text,
+    });
+    final data = jsonDecode(response.body);
+    int value = data['value'];
+    String message = data['message'];
+    if (value == 1) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => AlertDialog(
+          title: Text("Information"),
+          content: Text(message),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomePage()),
+                      (route) => false);
+                },
+                child: Text('Ok'))
+          ],
+        ),
+      );
+      setState(() {});
+    } else {
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => AlertDialog(
+                title: Text("Information"),
+                content: Text(message),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text("ok"))
+                ],
+              ));
+      setState(() {});
+
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +92,7 @@ class _RegisterPageState extends State<LogInPage> {
                   child: Text(
                     "SogLink",
                     style: boldTextStyle.copyWith(
-                        fontSize: 32, color: Color.fromRGBO(142, 160, 171, 1)),
+                        fontSize: 32, color: Color.fromRGBO(175, 126, 225, 1)),
                   ),
                 ),
                 SizedBox(
@@ -50,7 +104,7 @@ class _RegisterPageState extends State<LogInPage> {
                       fontSize: 14, color: Color.fromRGBO(142, 160, 171, 1)),
                 ),
                 Container(
-                  height: 50,
+                  height: 40,
                   child: TextField(
                     decoration: InputDecoration(
                       border: InputBorder.none,
@@ -115,7 +169,22 @@ class _RegisterPageState extends State<LogInPage> {
                 Center(
                   child: ButtonPrime(
                     text: 'SING IN',
-                    onTap: () {},
+                    onTap: () {
+                      if (emailController.text.isEmpty || passwordController.text.isEmpty){
+                        showDialog(context: context, 
+                        builder: (context) => AlertDialog(
+                          title: Text('Warning'),
+                          content: Text('Please, enter the fields'),
+                          actions: [
+                            TextButton(onPressed: (){
+                              Navigator.pop(context);
+                            }, child: Text('Ok'))
+                          ],
+                        ));
+                      }else{
+                        loginSubmit();
+                      }
+                    },
                   ),
                 ),
                 SizedBox(
@@ -130,7 +199,9 @@ class _RegisterPageState extends State<LogInPage> {
                     )
                   ],
                 ),
-                SizedBox(height: 50,),
+                SizedBox(
+                  height: 50,
+                ),
                 Center(
                   child: ButtonPrime(
                     text: 'SING UP',
