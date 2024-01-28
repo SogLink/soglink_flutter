@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:soglink/network/api/url_api.dart';
+import 'package:soglink/pages/doctors.dart';
 import 'package:soglink/pages/visits/upcoming_visits.dart';
 import 'package:soglink/theme.dart';
 import 'package:http/http.dart' as http;
@@ -459,7 +460,7 @@ class _HomePageState extends State<HomePage> {
                                                                                   'Step 2',
                                                                                   style: boldTextStyle.copyWith(fontSize: 26),
                                                                                 ),
-                                                                                
+
                                                                               ]),
                                                                             ));
                                                                           });
@@ -674,7 +675,9 @@ class _HomePageState extends State<HomePage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   ElevatedButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      Navigator.push(context, MaterialPageRoute(builder: (context)=> Doctors()));
+                                    },
                                     style: ElevatedButton.styleFrom(
                                       primary: Colors.white,
                                       minimumSize: Size(144, 90),
