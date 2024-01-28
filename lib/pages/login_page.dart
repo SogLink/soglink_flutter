@@ -1,12 +1,16 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:soglink/model/pref_profile_model.dart';
 import 'package:soglink/network/api/url_api.dart';
 import 'package:soglink/pages/home_page.dart';
+import 'package:soglink/pages/register_page.dart';
 import 'package:soglink/theme.dart';
-import 'package:soglink/widgets/general_logo.dart';
 import 'package:soglink/widgets/prime_button.dart';
 import 'package:http/http.dart' as http;
+
+import '../main.dart';
 
 class LogInPage extends StatefulWidget {
   const LogInPage({super.key});
@@ -16,6 +20,29 @@ class LogInPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<LogInPage> {
+  String? idUser;
+  String? name;
+  getPref() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    name = sharedPreferences.getString(PrefProfile.name);
+    setState(() {
+      idUser = sharedPreferences.getString(PrefProfile.idUser);
+      idUser == null ? sessionLogout() : sessionLogin();
+    });
+  }
+
+  sessionLogout() {}
+  sessionLogin() {
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => Navigation()));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getPref();
+  }
+
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -35,7 +62,13 @@ class _RegisterPageState extends State<LogInPage> {
     final data = jsonDecode(response.body);
     int value = data['value'];
     String message = data['message'];
+    String idUser = data['id_user'];
+    String name = data['name'];
+    String secondName = data['secondName'];
+    String email = data['email'];
+    String createdAt = data['createdAt'];
     if (value == 1) {
+      safePref(idUser, name, secondName, email, createdAt);
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -49,6 +82,7 @@ class _RegisterPageState extends State<LogInPage> {
                       context,
                       MaterialPageRoute(builder: (context) => HomePage()),
                       (route) => false);
+                  print(name);
                 },
                 child: Text('Ok'))
           ],
@@ -71,8 +105,19 @@ class _RegisterPageState extends State<LogInPage> {
                 ],
               ));
       setState(() {});
-
     }
+  }
+
+  safePref(String idUser, String name, String secondName, String email,
+      String createdAt) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    setState(() {
+      sharedPreferences.setString(PrefProfile.idUser, idUser);
+      sharedPreferences.setString(PrefProfile.name, name);
+      sharedPreferences.setString(PrefProfile.secondName, secondName);
+      sharedPreferences.setString(PrefProfile.email, email);
+      sharedPreferences.setString(PrefProfile.createdAt, createdAt);
+    });
   }
 
   @override
@@ -92,28 +137,24 @@ class _RegisterPageState extends State<LogInPage> {
                   child: Text(
                     "SogLink",
                     style: boldTextStyle.copyWith(
-                        fontSize: 32, color: Color.fromRGBO(175, 126, 225, 1)),
+                        fontSize: 32, color: Color.fromRGBO(142, 160, 171, 1)),
                   ),
                 ),
                 SizedBox(
                   height: 80,
                 ),
                 Text(
-                  'Phone number',
+                  'Email',
                   style: regularTextStyle.copyWith(
                       fontSize: 14, color: Color.fromRGBO(142, 160, 171, 1)),
                 ),
                 Container(
                   height: 40,
                   child: TextField(
+                    controller: emailController,
                     decoration: InputDecoration(
                       border: InputBorder.none,
-                      prefix: Text(
-                        '+998',
-                        style: TextStyle(
-                            color: Color.fromRGBO(142, 160, 171, 1),
-                            fontSize: 15),
-                      ),
+                      
                     ),
                   ),
                 ),
@@ -134,6 +175,7 @@ class _RegisterPageState extends State<LogInPage> {
                 Container(
                   height: 50,
                   child: TextField(
+                    controller: passwordController,
                     obscureText: _secureText,
                     decoration: InputDecoration(
                       suffixIcon: IconButton(
@@ -170,32 +212,49 @@ class _RegisterPageState extends State<LogInPage> {
                   child: ButtonPrime(
                     text: 'SING IN',
                     onTap: () {
-                      if (emailController.text.isEmpty || passwordController.text.isEmpty){
-                        showDialog(context: context, 
-                        builder: (context) => AlertDialog(
-                          title: Text('Warning'),
-                          content: Text('Please, enter the fields'),
-                          actions: [
-                            TextButton(onPressed: (){
-                              Navigator.pop(context);
-                            }, child: Text('Ok'))
-                          ],
-                        ));
-                      }else{
+                      if (emailController.text.isEmpty ||
+                          passwordController.text.isEmpty) {
+                        showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                                  title: Text('Warning'),
+                                  content: Text('Please, enter the fields'),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text('Ok'))
+                                  ],
+                                ));
+                      } else {
                         loginSubmit();
                       }
                     },
                   ),
                 ),
                 SizedBox(
-                  height: 15,
+                  height: 25,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Forgot Password?',
-                      style: boldTextStyle.copyWith(fontSize: 18),
+                      "Don't have an account?",
+                      style: lightTextStyle.copyWith(fontSize: 18),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => RegisterPage()),
+                            (route) => false);
+                      },
+                      child: Text(
+                        'Log In',
+                        style: boldTextStyle.copyWith(fontSize: 18),
+                      ),
                     )
                   ],
                 ),

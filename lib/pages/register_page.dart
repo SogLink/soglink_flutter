@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:soglink/network/api/url_api.dart';
+import 'package:soglink/pages/login_page.dart';
 import 'package:soglink/theme.dart';
-import 'package:soglink/widgets/general_logo.dart';
 import 'package:soglink/widgets/prime_button.dart';
 import 'package:http/http.dart' as http;
 
@@ -12,11 +15,10 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-TextEditingController nameController = TextEditingController();
-TextEditingController secondNameController = TextEditingController();
-TextEditingController eMail = TextEditingController();
-TextEditingController password = TextEditingController();
-TextEditingController repeatPassword = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController secondNameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
   bool _secureText = true;
   showHide() {
@@ -26,7 +28,16 @@ TextEditingController repeatPassword = TextEditingController();
   }
 
   registerSubmit() async {
-    var url = Uri.parse("uri");
+    var registerUrl = Uri.parse(BaseUrl.apiregister);
+    final response = await http.post(registerUrl, body: {
+      "name": nameController,
+      "secondName": secondNameController,
+      "email": emailController,
+      "password": passwordController,
+    });
+    final data = jsonDecode(response.body);
+    int value = data['value'];
+    String message = data['message'];
   }
 
   @override
@@ -44,7 +55,12 @@ TextEditingController repeatPassword = TextEditingController();
                     height: 88,
                     child: Image.asset(
                       'lib/icons/key.png',
-                      color: Color.fromRGBO(175, 126, 225, 1),
+                      color: Color
+                                                                        .fromRGBO(
+                                                                            142,
+                                                                            160,
+                                                                            171,
+                                                                            1),
                     ),
                   ),
                 ),
@@ -59,7 +75,7 @@ TextEditingController repeatPassword = TextEditingController();
                 Container(
                   height: 40,
                   child: TextField(
-                    controller:  nameController,
+                    controller: nameController,
                     decoration: InputDecoration(
                       border: InputBorder.none,
                     ),
@@ -105,7 +121,7 @@ TextEditingController repeatPassword = TextEditingController();
                 Container(
                   height: 40,
                   child: TextField(
-                    controller: eMail,
+                    controller: emailController,
                     decoration: InputDecoration(
                       border: InputBorder.none,
                     ),
@@ -117,10 +133,10 @@ TextEditingController repeatPassword = TextEditingController();
                     decoration: BoxDecoration(
                       color: Color.fromRGBO(207, 225, 236, 1),
                     )),
-                    SizedBox(
+                SizedBox(
                   height: 10,
                 ),
-                    Text(
+                Text(
                   'Password',
                   style: regularTextStyle.copyWith(
                       fontSize: 14, color: Color.fromRGBO(142, 160, 171, 1)),
@@ -128,7 +144,7 @@ TextEditingController repeatPassword = TextEditingController();
                 Container(
                   height: 40,
                   child: TextField(
-                    controller: password,
+                    controller: passwordController,
                     decoration: InputDecoration(
                       border: InputBorder.none,
                     ),
@@ -140,30 +156,15 @@ TextEditingController repeatPassword = TextEditingController();
                     decoration: BoxDecoration(
                       color: Color.fromRGBO(207, 225, 236, 1),
                     )),
-                    SizedBox(
-                  height: 10,
-                ),
-                    Text(
-                  'Repeat Password',
-                  style: regularTextStyle.copyWith(
-                      fontSize: 14, color: Color.fromRGBO(142, 160, 171, 1)),
-                ),
-                Container(
-                  height: 40,
-                  child: TextField(
-                    controller: repeatPassword,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                    ),
-                  ),
-                ),
                 Container(
                     width: 368,
                     height: 1,
                     decoration: BoxDecoration(
                       color: Color.fromRGBO(207, 225, 236, 1),
                     )),
-                    SizedBox(height: 30,),
+                SizedBox(
+                  height: 30,
+                ),
                 Center(
                   child: ButtonPrime(
                     text: 'SING IN',
@@ -171,22 +172,28 @@ TextEditingController repeatPassword = TextEditingController();
                   ),
                 ),
                 SizedBox(
-                  height: 15,
+                  height: 25,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Already have an account?',
-                      style: boldTextStyle.copyWith(fontSize: 18),
+                      'Already have an account? ',
+                      style: lightTextStyle.copyWith(fontSize: 18),
                     ),
-                    Text(
-                      'Log In',
-                      style: boldTextStyle.copyWith(fontSize: 18),
+                    InkWell(
+                      onTap: () {
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LogInPage()),
+                            (route) => false);
+                      },
+                      child: Text('Sing Up', style: boldTextStyle.copyWith(fontSize: 18),),
                     ),
                   ],
                 ),
-                Column()
+                
               ],
             ),
           )

@@ -5,7 +5,7 @@ class ButtonPrime extends StatelessWidget {
   final String text;
   final Function()? onTap;
 
-ButtonPrime({this.onTap, required this.text});
+  ButtonPrime({this.onTap, required this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -14,11 +14,12 @@ ButtonPrime({this.onTap, required this.text});
       height: 60,
       child: ElevatedButton(
         onPressed: onTap,
-        child: Text(text,
+        child: Text(
+          text,
           style: regularTextStyle.copyWith(fontSize: 18),
         ),
         style: ElevatedButton.styleFrom(
-            primary: Color.fromRGBO(175, 126, 225, 1),
+            primary: Color.fromRGBO(142, 160, 171, 1),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20))),
       ),

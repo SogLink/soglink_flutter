@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class GeneralLogo extends StatelessWidget {
+
+  
   const GeneralLogo({super.key});
 
   @override
